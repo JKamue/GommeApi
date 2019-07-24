@@ -127,20 +127,6 @@ class GommeApi
         //Isolate ClanTag
         $response['tag'] = stringIsolateBetween($html,'class="clanTag">[',']</span>');
 
-
-        //Look if clan has Youtube
-        if (strpos($html, "a href=\"https://www.youtube.com/channel/") !== false) {
-            $response['youtube'] = stringIsolateBetween($html,"<a href=\"https://www.youtube.com/channel/","\" target=\"_blank\"> <i class=\"fa fa-youtube-play\">");
-            $html = str_replace($response['youtube']."\" target=\"_blank\">","",$html);
-            $response['youtube'] = "https://www.youtube.com/channel/".$response['youtube'];
-        }
-
-        //Look if clan has twitter
-        if (strpos($html, "<a href=\"https://twitter.com/") !== false) {
-            $html = str_replace("\" target=\"_blank\">Shop","",$html);
-            $response['twitter'] = "https://twitter.com/".stringIsolateBetween($html,"<a href=\"https://twitter.com/","\" target=\"_blank\">");
-        }
-
         //Isolate the block the other information is standing in
         $table = stringIsolateBetween($html,"class=\"table bedwars\">","</table>");
         $pieces = explode("<td",$table);

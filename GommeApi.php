@@ -168,34 +168,37 @@ class GommeApi
             return false;
         }
 
-        $parts = explode("<div class=\"clanMembersList\">",$html);
-
-        $tmp = array();
-
+        $parts = explode("<h3 class=\"panel-title\">",$html);
+		
+        $return = array();
+		
         //Loop through each part and get the player name from the Link (/player/index?playerName=[name]"> <div class="media-object)
         for ($i=1;$i<4;$i++) {
+			$tmp = array();
+			
             if (isset($parts[$i])) {
-                $tmp[$i - 1] = array();
+                $tmp = array();
                 $parts_sub = explode("<div class=\"media\">", $parts[$i]);
+				
+				$type = $parts_sub[0];
+				array_splice($parts_sub, 0, 1);
+				
                 foreach ($parts_sub as &$part) {
                     $player = stringIsolateBetween($part, "playerName=", "\"> <div class=\"media-object");
                     if ($player != " " and $player !== null) {
-                        array_push($tmp[$i - 1], $player);
+                        array_push($tmp, $player);
                     }
                 }
+				
+				if (strpos($type, "Clan Leader") !== false) {
+					$return['leader'] = $tmp;
+				} else  if (strpos($type, "Clan Mods") !== false) {
+					$return['mods'] = $tmp;
+				} else {
+					$return['member'] = $tmp;
+				}
             }
-        }
-
-        $return = array();
-        if (isset($tmp[0][0])) {
-            $return['leader'] = $tmp[0];
-        }
-        if (isset($tmp[1][0])) {
-            $return['mods'] = $tmp[1];
-        }
-        if (isset($tmp[2][0])) {
-            $return['member'] = $tmp[2];
-        }
+        } 
 
         return $return;
     }
@@ -499,7 +502,7 @@ class GommeApi
     //Get List of latest CWs
     public static function fetchLastCws($amount) {
         $url = "https://www.gommehd.net/clans/get-matches?game=bedwars&finished=true&amount=".$amount;
-        $html = get_contents("https://jkamue.de/referrer.php?url=".$url);
+        $html = get_contents($url);
         $html = stringReplaceBreaks($html);
         $cws = explode("</tr>",$html);
         $return = array();

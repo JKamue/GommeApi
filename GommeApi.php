@@ -315,7 +315,7 @@ class GommeApi
     }
 
     //Get CW Stats
-    //Spieltyp, Map, Gewinner Clan, Verlierer Clan, MVP, Spielstart, Spieldauer, ELO, ID, ReplayID, ChatlogID
+    //Spieltyp, Map, Gewinner Clan, Verlierer Clan, MVP, Spielstart, Spieldauer, ELO, ID, ReplayID
     public static function fetchCwStats($cw_id) {
         //https://www.gommehd.net/clan-match?id=
         $url = "https://www.gommehd.net/clan-match?id=".$cw_id;
@@ -333,6 +333,7 @@ class GommeApi
 
 
         $return = array();
+		$return['matchid'] = $cw_id;
         $return['winner'] = array();
         $return['loser'] = array();
         //14695513-cf0b-4286-a28b-cc019868f0b6
@@ -365,17 +366,14 @@ class GommeApi
         $other = str_replace(stringIsolateBetween($other,"</h1>","<div>"),"",$other);
         $return['mvp'] = stringIsolateBetween($other,"playerName=","\" style=\"color:");
 
-        //Isolate ELO
-        $return['elo'] = stringIsolateBetween($html,"<td align=\"center\"><i class=\"fa fa-exchange\" aria-hidden=\"true\"></i></td>","<td align=\"center\"><i class=\"fa fa-key\" aria-hidden=\"true\"></i></td>");
-        $return['elo'] = stringIsolateBetween($return['elo'],")</td> ", "</td> </tr>");
-        $data = str_split($return['elo']);
-        $res = "";
-        foreach($data as &$char) {
-            if (is_numeric($char)) {
-                $res .= $char;
-            }
-        }
-        $return['elo'] = $res;
+        $table = stringIsolateBetween($other,"<table class=\"table mapInf\">","</a> </td> </tr> </table>");
+		$parts = explode("<tr>",$table);
+		
+		$return['datetime'] = stringIsolateBetween($parts[1],"Spielstart</td> <td>","</td> </tr>");
+		$return['duration'] = stringIsolateBetween($parts[2],"Dauer</td> <td>","</td> </tr>");
+		$return['elo'] = stringIsolateBetween($parts[3],"verloren)</td> <td>","</td> </tr>");
+		$return['replay'] = stringIsolateBetween($parts[5],"Replay-ID</td> <td> "," </td> </tr>");
+		
         return $return;
     }
 

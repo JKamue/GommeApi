@@ -274,7 +274,7 @@ class GommeApi
         $cws = explode("</tr>",$html);
         $return = array();
 
-        for ($i=0;$i<$amount;$i++) {
+        for ($i=0;$i<count($cws)-1;$i++) {
             $cw = $cws[$i];
             $tmp = array();
 

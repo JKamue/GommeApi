@@ -352,7 +352,7 @@ class GommeApi
             $name = str_replace(" ","",$name);
             $name = str_replace("[$tag]","",$name);
 
-            if (strpos($other, $name) !== false) {
+            if (strpos($clan, "#3984c6;") !== false) {
                 $type = "winner";
             } else {
                 $type = "loser";

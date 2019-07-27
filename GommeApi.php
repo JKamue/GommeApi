@@ -333,11 +333,13 @@ class GommeApi
 
 
         $return = array();
+        $tmp = array();
 		$return['matchid'] = $cw_id;
         $return['winner'] = array();
         $return['loser'] = array();
-        //14695513-cf0b-4286-a28b-cc019868f0b6
-        foreach ($clans as &$clan) {
+		
+        for($i = 0; $i < 2; $i++) {
+			$clan = $clans[$i];
             $name = stringIsolateBetween($clan,"<span style=\"\"> "," </span> </a>");
 
             if($name != strip_tags($name)) {
@@ -352,20 +354,28 @@ class GommeApi
             $name = str_replace(" ","",$name);
             $name = str_replace("[$tag]","",$name);
 
-            if (strpos($clan, "#3984c6;") !== false) {
-                $type = "winner";
-            } else {
-                $type = "loser";
-            }
 
-            $return[$type]['name'] = $name;
-            $return[$type]['tag'] = $tag;
+            $tmp[$i]['name'] = $name;
+            $tmp[$i]['tag'] = $tag;
         }
 
         //Isolate MVP name
         $other = str_replace(stringIsolateBetween($other,"</h1>","<div>"),"",$other);
         $return['mvp'] = stringIsolateBetween($other,"playerName=","\" style=\"color:");
-
+		
+		//Detect winner
+		$piece = explode("<td>Gewinner-Clan</td>",$html)[1];
+		if (strpos($piece, $tmp[0]['name']) !== false) {
+            // Clan 1 won
+			$return['winner'] = $tmp[0];
+			$return['loser'] = $tmp[1];
+        } else {
+			// Clan 2 won
+			$return['winner'] = $tmp[1];
+			$return['loser'] = $tmp[0];			
+		}
+		
+		
         $table = stringIsolateBetween($other,"<table class=\"table mapInf\">","</a> </td> </tr> </table>");
 		$parts = explode("<tr>",$table);
 		

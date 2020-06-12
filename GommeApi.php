@@ -164,15 +164,15 @@ class GommeApi
         $parts = explode("<h3 class=\"panel-title\">",$html);
 		
         $return = array();
-		
+
         //Loop through each part and get the player name from the Link (/player/index?playerName=[name]"> <div class="media-object)
         for ($i=1;$i<4;$i++) {
 			$tmp = array();
-			
+
             if (isset($parts[$i])) {
                 $tmp = array();
                 $parts_sub = explode("<div class=\"media\">", $parts[$i]);
-				
+
 				$type = $parts_sub[0];
 				array_splice($parts_sub, 0, 1);
 				
@@ -185,7 +185,7 @@ class GommeApi
 				
 				if (strpos($type, "Clan Leader") !== false) {
 					$return['leader'] = $tmp;
-				} else  if (strpos($type, "Moderatoren") !== false) {
+				} else  if (strpos($type, "Clan Mods") !== false) {
 					$return['mods'] = $tmp;
 				} else {
 					$return['member'] = $tmp;

@@ -23,6 +23,12 @@ if (isset($_GET['function'])) {
         } else {
             $response = GommeApi::convertNameToUUID($_GET['name']);
         }
+    } elseif ($function == "tagToName") {
+        if (!isset($_GET['tag'])) {
+            $response = "Error: No Name defined";
+        } else {
+            $response = GommeApi::convertTagToName($_GET['tag']);
+        }
     } elseif ($function == "clanStats") {
         if (!isset($_GET['name'])) {
             $response = "Error: No Name defined";

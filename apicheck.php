@@ -25,6 +25,16 @@
                 </td>
             </tr>
             <tr>
+                <td>Clantag zu Clanname</td>
+                <td>
+                    <form target="_blank" action="api.php" method="get">
+                        <input type="hidden" name="function" value="tagToName">
+                        Tag: <input name="tag" type="text"><br>
+                        <input type="submit">
+                    </form>
+                </td>
+            </tr>
+            <tr>
                 <td>Clanname zu UUID</td>
                 <td>
                     <form target="_blank" action="api.php" method="get">
